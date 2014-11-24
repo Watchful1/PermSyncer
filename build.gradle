@@ -1,15 +1,97 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.5
-version = '1.0'
-
-repositories {
-    mavenCentral()
+// Gradle repositories and dependencies
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.1'
+    }
 }
 
+// Apply plugin
+apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+configurations {
+    deployerJars // maven deployment
+}
+
+repositories {
+mavenCentral()
+mavenLocal()
+}
+
+// Project dependencies
 dependencies {
     compile 'org.apache.poi:poi:3.10-FINAL'
     compile 'org.apache.poi:poi-ooxml:3.10-FINAL'
     compile 'org.apache.poi:poi-ooxml-schemas:3.10-FINAL'
     compile 'com.google.code.gson:gson:2.2.4'
+    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.7'
+}
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+// Basic project information
+group = 'gr.watchful'
+archivesBaseName = 'permsyncer'
+mainClassName = 'gr.watchful.permsyncer.Main'
+
+// Define variables
+if (System.getenv().BUILD_NUMBER != null) {
+    ext.buildNum = System.getenv().BUILD_NUMBER
+} else {
+    ext.buildNum = "9999999"
+}
+version = '1.0'
+// Minimum version of Java required
+sourceCompatibility = '1.7'//internal tools require java 7
+targetCompatibility = '1.7'
+
+
+shadowJar  {
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    classifier = ''
+}
+build.dependsOn(shadowJar)
+
+
+// Source compiler configuration
+tasks.withType(JavaCompile) {
+    options.encoding = 'utf8'
+}
+
+if (project.hasProperty("local_maven")) {
+    apply plugin: 'maven'
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    repository(url: "file://${local_maven}")
+            }
+        }
+    }
+}
+if (project.hasProperty("remote_maven")) {
+    apply plugin: 'maven'
+    uploadArchives {
+        repositories.mavenDeployer {
+            configuration = configurations.deployerJars
+            repository(url: "ftp://${remote_maven}") {
+                authentication(userName: "${ftp_username}", password: "${ftp_pass}")
+            }
+        }
+    }
 }
