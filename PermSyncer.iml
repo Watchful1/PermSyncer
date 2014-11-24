@@ -23,6 +23,7 @@
     <orderEntry type="library" exported="" name="Gradle: xmlbeans-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: xml-apis-1.0.b2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: stax-api-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gson-2.2.4" level="project" />
   </component>
 </module>
 

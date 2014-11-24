@@ -13,7 +13,7 @@ public class Main {
 			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
 
 	public Main() {
-		System.out.println("PING");
+		updateListings();
 	}
 
 	public boolean updateListings() {
@@ -44,6 +44,7 @@ public class Main {
 			return false;
 		}
 		infos.remove(0);//remove the first row, it contains column titles
+		System.out.println(mappings.size());
 		//nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));
 		return true;
 	}
