@@ -13,9 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-	public static final String defaultUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
-			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
-
 	private ArrayList<ArrayList<String>> infos;
 	private ArrayList<ArrayList<String>> mappings;
 	private HashMap<String, Mod> mods;
@@ -27,9 +24,10 @@ public class Main {
 			config = (Config) FileUtils.readObject(new File("config.json"), new Config());
 		} else {
 			config = new Config();
-			config.spreadsheetUrl = defaultUrl;
+			config.init();
 			FileUtils.saveObject(config, configFile);
 		}
+		if(config.init()) FileUtils.saveObject(config, configFile);
 
 		File permFile = new File("Permissions.xlsx");
 		if (!permFile.exists()) {
@@ -46,6 +44,14 @@ public class Main {
 		} catch (IOException e) {
 			System.out.println("Could not download perm file");
 			return;
+		}
+		String md5 = FileUtils.getMD5(permFile);
+		if(md5.equals(config.lastMD5)) {
+			System.out.println("MD5 same as last, not updating");
+			return;
+		} else {
+			config.lastMD5 = md5;
+			FileUtils.saveObject(config, configFile);
 		}
 
 		try {
