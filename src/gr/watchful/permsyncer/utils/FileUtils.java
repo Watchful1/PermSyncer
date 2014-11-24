@@ -13,7 +13,6 @@ public class FileUtils {
 	}
 
 	public static boolean writeFile(String string, File location, boolean forceASCII) {
-		if(!location.exists()) location.getParentFile().mkdirs();
 		try{
 			if (location.exists()) location.delete();
 			location.createNewFile();
@@ -64,7 +63,6 @@ public class FileUtils {
 	}
 
 	public static void downloadToFile(URL url, File file) throws IOException {
-		//file.getParentFile().mkdirs();
 		ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.getChannel().transferFrom(rbc, 0, 1 << 24);

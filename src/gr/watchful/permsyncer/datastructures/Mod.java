@@ -1,5 +1,7 @@
 package gr.watchful.permsyncer.datastructures;
 
+import java.util.ArrayList;
+
 public class Mod {
 	public static final int OPEN = 0;
 	public static final int NOTIFY = 1;
@@ -11,7 +13,6 @@ public class Mod {
 	public String shortName;
 
 	public String modName;
-	public String modVersion;
 	public String modAuthor;
 	public String modLink;
 
@@ -20,25 +21,8 @@ public class Mod {
 	public String privateLicenseLink;
 	public String privateLicenseImage;
 
-	public String customLink;
-	public boolean isPublicPerm;
-
 	public int publicPolicy;
 	public int privatePolicy;
 
-	public Mod(String shortName) {
-		this.shortName = shortName;
-		modName = "Unknown";
-		modAuthor = "Unknown";
-		modLink = "None";
-		modVersion = "Unknown";
-		publicPolicy = UNKNOWN;
-		privatePolicy = UNKNOWN;
-		licenseLink = "";
-		licenseImage = "";
-		privateLicenseLink = "";
-		privateLicenseImage = "";
-		customLink = "";
-		isPublicPerm = false;
-	}
+	public ArrayList<String> modIDs;
 }
