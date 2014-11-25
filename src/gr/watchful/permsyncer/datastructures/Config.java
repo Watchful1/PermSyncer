@@ -37,6 +37,7 @@ public class Config {
 	public static Config load(String fileName) {
 		File file = new File(fileName);
 		Config config = (Config) FileUtils.readObject(file, new Config());
+		if(config == null) config = new Config();
 		config.saveLocation = file;
 		if(config.init()) config.save();
 		return config;
