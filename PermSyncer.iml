@@ -26,6 +26,8 @@
     <orderEntry type="library" exported="" name="Gradle: stax-api-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-net-3.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: log4j-core-2.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: log4j-api-2.1" level="project" />
   </component>
 </module>
 

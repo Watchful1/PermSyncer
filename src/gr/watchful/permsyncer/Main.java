@@ -20,22 +20,11 @@ public class Main {
 		final String configName = "config.json";
 		final String permJsonName = "permissions.json";
 		final String datastoreName = "data";
-		ArrayList<ArrayList<String>> infos;
-		ArrayList<ArrayList<String>> mappings;
-		HashMap<String, Mod> mods;
-		Config config;
-		DataStore datastore;
 
-		File configFile = new File(configName);
-		if(configFile.exists()) {
-			config = (Config) FileUtils.readObject(configFile, new Config());
-		} else {//todo handle config being null
-			config = new Config();
-			config.init();
-			FileUtils.saveObject(config, configFile);
-		}
-		if(config.init()) FileUtils.saveObject(config, configFile);
+		// Load the config, creating it if it isn't there
+		Config config = Config.load(configName);
 
+		// Download the spreadsheet
 		File permFile = new File(permFileName);
 		if (!permFile.exists()) {
 			try {
@@ -53,22 +42,23 @@ public class Main {
 			return;
 		}
 
+		// Check the md5 of the spreadsheet against the older one
 		String md5 = FileUtils.getMD5(permFile);
-		File datastoreFile = new File(datastoreName);
-		if(datastoreFile.exists()) {
-			datastore = (DataStore) FileUtils.readObject(datastoreFile, new DataStore());
-		} else {
-			datastore = new DataStore();
-			datastore.lastMD5 = "none";
-		}
+
+		DataStore datastore = DataStore.load(datastoreName);
+
 		if(!config.forceUpdate && md5.equals(datastore.lastMD5)) {
 			System.out.println("MD5 same as last, not updating");
 			return;
 		} else {
 			datastore.lastMD5 = md5;
-			FileUtils.saveObject(datastore, datastoreFile);
+			datastore.save();
 		}
 
+		// Parse the two relevant pages in the spreadsheet into arrays. This could likely be skipped and the data
+		// parsed directly into the mod objects, but this is far simpler
+		ArrayList<ArrayList<String>> infos;
+		ArrayList<ArrayList<String>> mappings;
 		try {
 			infos = ExcelUtils.toArray(permFile, 1);
 			mappings = ExcelUtils.toArray(permFile, 2);
@@ -76,13 +66,14 @@ public class Main {
 			System.out.println("Could not read perm file");
 			return;
 		}
-		infos.remove(0);
+		infos.remove(0); // The first line is a header
 
 		String imageBaseUrl = infos.get(15).get(14);
 		String imageExtension = infos.get(15).get(15);
-		mods = new HashMap<>();
-
+		HashMap<String, Mod> mods = new HashMap<>();
 		int i=0;
+
+		// Now parse the arrays into mod objects. Store in a hashmap so we can add the ID's easily later
 		for(ArrayList<String> row : infos) {
 			i++;
 			if(row.size() >= 6 && row.get(2) != null && !row.get(2).equals("")) {
@@ -164,6 +155,8 @@ public class Main {
 				mods.put(info.shortName, info);
 			}
 		}
+
+		// now add the ID mappings to the mods
 		for(ArrayList<String> row : mappings) {
 			if(row.get(0) != null && row.get(1) != null && !row.get(0).equals("") && !row.get(1).equals("")) {
 				if(mods.containsKey(row.get(1))) {
@@ -172,13 +165,16 @@ public class Main {
 			}
 		}
 
+		// copy everything from the hashmap to an arraylist
 		ArrayList<Mod> temp = new ArrayList<>();
 		for(Map.Entry<String, Mod> entry : mods.entrySet()) {
 			temp.add(entry.getValue());
 		}
 
+		// Switch to an array before saving to the json
 		FileUtils.saveObject(temp.toArray(), new File(permJsonName));
 
+		// Upload to the FTP server
 		FTPUtils.upload(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
 				"/static/permissions/permissions.json");
 	}
