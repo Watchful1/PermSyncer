@@ -78,6 +78,7 @@ public class FileUtils {
 	}
 
 	public static Object getObject(String JSON, Object object) {
+		if(JSON == null) return null;
 		Gson gson = new Gson();
 		Object tempObject;
 		try {

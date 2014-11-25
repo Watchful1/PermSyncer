@@ -32,6 +32,7 @@ dependencies {
     compile 'org.apache.poi:poi-ooxml:3.10-FINAL'
     compile 'org.apache.poi:poi-ooxml-schemas:3.10-FINAL'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'commons-net:commons-net:3.3'
     deployerJars 'org.apache.maven.wagon:wagon-ftp:2.7'
 }
 sourceSets {

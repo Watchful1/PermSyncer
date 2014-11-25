@@ -1,8 +1,10 @@
 package gr.watchful.permsyncer;
 
 import gr.watchful.permsyncer.datastructures.Config;
+import gr.watchful.permsyncer.datastructures.DataStore;
 import gr.watchful.permsyncer.datastructures.Mod;
 import gr.watchful.permsyncer.utils.ExcelUtils;
+import gr.watchful.permsyncer.utils.FTPUtils;
 import gr.watchful.permsyncer.utils.FileUtils;
 
 import java.io.File;
@@ -13,23 +15,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
+	public static final String permFileName = "Permissions.xlsx";
+	public static final String configName = "config.json";
+	public static final String permJsonName = "permissions.json";
+	public static final String datastoreName = "data";
 	private ArrayList<ArrayList<String>> infos;
 	private ArrayList<ArrayList<String>> mappings;
 	private HashMap<String, Mod> mods;
 	private Config config;
+	private DataStore datastore;
 
 	public Main() {
-		File configFile = new File("config.json");
+		File configFile = new File(configName);
 		if(configFile.exists()) {
-			config = (Config) FileUtils.readObject(new File("config.json"), new Config());
-		} else {
+			config = (Config) FileUtils.readObject(configFile, new Config());
+		} else {//todo handle config being null
 			config = new Config();
 			config.init();
 			FileUtils.saveObject(config, configFile);
 		}
 		if(config.init()) FileUtils.saveObject(config, configFile);
 
-		File permFile = new File("Permissions.xlsx");
+		File permFile = new File(permFileName);
 		if (!permFile.exists()) {
 			try {
 				permFile.createNewFile();
@@ -45,13 +52,21 @@ public class Main {
 			System.out.println("Could not download perm file");
 			return;
 		}
+
 		String md5 = FileUtils.getMD5(permFile);
-		if(md5.equals(config.lastMD5)) {
+		File datastoreFile = new File(datastoreName);
+		if(datastoreFile.exists()) {
+			datastore = (DataStore) FileUtils.readObject(datastoreFile, new DataStore());
+		} else {
+			datastore = new DataStore();
+			datastore.lastMD5 = "none";
+		}
+		if(!config.forceUpdate && md5.equals(datastore.lastMD5)) {
 			System.out.println("MD5 same as last, not updating");
 			return;
 		} else {
-			config.lastMD5 = md5;
-			FileUtils.saveObject(config, configFile);
+			datastore.lastMD5 = md5;
+			FileUtils.saveObject(datastore, datastoreFile);
 		}
 
 		try {
@@ -70,7 +85,10 @@ public class Main {
 			temp.add(entry.getValue());
 		}
 
-		FileUtils.saveObject(temp.toArray(), new File("permissions.json"));
+		FileUtils.saveObject(temp.toArray(), new File(permJsonName));
+
+		FTPUtils.upload(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
+				"/static/permissions/permissions.json");
 	}
 
 	public void loadMods(String baseUrl, String extension) {

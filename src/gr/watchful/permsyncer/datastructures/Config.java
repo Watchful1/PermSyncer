@@ -5,7 +5,7 @@ public class Config {
 	public String FTPUsername;
 	public String FTBPassword;
 	public String FTBServer;
-	public String lastMD5;
+	public boolean forceUpdate;
 
 	public boolean init() {
 		boolean changed = false;
@@ -24,10 +24,6 @@ public class Config {
 		if(FTBServer == null) {
 			changed = true;
 			FTBServer = "serveraddress";
-		}
-		if(lastMD5 == null) {
-			changed = true;
-			lastMD5 = "nomd5";
 		}
 		return changed;
 	}
