@@ -15,17 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-	public static final String permFileName = "Permissions.xlsx";
-	public static final String configName = "config.json";
-	public static final String permJsonName = "permissions.json";
-	public static final String datastoreName = "data";
-	private ArrayList<ArrayList<String>> infos;
-	private ArrayList<ArrayList<String>> mappings;
-	private HashMap<String, Mod> mods;
-	private Config config;
-	private DataStore datastore;
+	public static void main(String[] args) {
+		final String permFileName = "Permissions.xlsx";
+		final String configName = "config.json";
+		final String permJsonName = "permissions.json";
+		final String datastoreName = "data";
+		ArrayList<ArrayList<String>> infos;
+		ArrayList<ArrayList<String>> mappings;
+		HashMap<String, Mod> mods;
+		Config config;
+		DataStore datastore;
 
-	public Main() {
 		File configFile = new File(configName);
 		if(configFile.exists()) {
 			config = (Config) FileUtils.readObject(configFile, new Config());
@@ -78,22 +78,8 @@ public class Main {
 		}
 		infos.remove(0);
 
-		loadMods(infos.get(15).get(14), infos.get(15).get(15));
-
-		ArrayList<Mod> temp = new ArrayList<>();
-		for(Map.Entry<String, Mod> entry : mods.entrySet()) {
-			temp.add(entry.getValue());
-		}
-
-		FileUtils.saveObject(temp.toArray(), new File(permJsonName));
-
-		FTPUtils.upload(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
-				"/static/permissions/permissions.json");
-	}
-
-	public void loadMods(String baseUrl, String extension) {
-		String imageBaseUrl = baseUrl;
-		String imageExtension = extension;
+		String imageBaseUrl = infos.get(15).get(14);
+		String imageExtension = infos.get(15).get(15);
 		mods = new HashMap<>();
 
 		int i=0;
@@ -185,9 +171,15 @@ public class Main {
 				}
 			}
 		}
-	}
 
-	public static void main(String[] args) {
-		new Main();
+		ArrayList<Mod> temp = new ArrayList<>();
+		for(Map.Entry<String, Mod> entry : mods.entrySet()) {
+			temp.add(entry.getValue());
+		}
+
+		FileUtils.saveObject(temp.toArray(), new File(permJsonName));
+
+		FTPUtils.upload(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
+				"/static/permissions/permissions.json");
 	}
 }

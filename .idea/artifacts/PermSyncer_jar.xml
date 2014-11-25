@@ -4,6 +4,7 @@
     <root id="archive" name="PermSyncer.jar">
       <element id="module-output" name="PermSyncer" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlbeans/xmlbeans/2.3.0/8704dcf5c9f10265a08f5020b0fab70eb64ac3c4/xmlbeans-2.3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-net/commons-net/3.3/cd0d5510908225f76c5fe5a3f1df4fa44866f81e/commons-net-3.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml-schemas/3.10-FINAL/835fac8134ae4a02e00de8bda2dcc4b46d7aeec2/poi-ooxml-schemas-3.10-FINAL.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/stax/stax-api/1.0.1/49c100caf72d658aca8e58bd74a4ba90fa2b0d70/stax-api-1.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.10-FINAL/42b365f90a4bedbf95944a409c8a25d5952bc3af/poi-ooxml-3.10-FINAL.jar" path-in-jar="/" />
