@@ -10,6 +10,7 @@ public class Config {
 	public String FTBPassword;
 	public String FTBServer;
 	public boolean forceUpdate;
+	public boolean useSFTP = false;
 
 	transient public File saveLocation;
 

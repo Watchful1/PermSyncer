@@ -175,7 +175,13 @@ public class Main {
 		FileUtils.saveObject(temp.toArray(), new File(permJsonName));
 
 		// Upload to the FTP server
-		FTPUtils.upload(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
-				"/static/permissions/permissions.json");
+		if(config.useSFTP) {
+			FTPUtils.uploadSFTP(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
+					"/static/permissions/permissions.json");
+		} else {
+			FTPUtils.uploadFTP(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
+					"/static/permissions/permissions.json");
+		}
+
 	}
 }
