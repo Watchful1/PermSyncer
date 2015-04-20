@@ -177,7 +177,7 @@ public class Main {
 		// Upload to the FTP server
 		if(config.useSFTP) {
 			FTPUtils.uploadSFTP(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
-					"/static/permissions/permissions.json");
+					"/ftb/FTB2/static/permissions/permissions.json");
 		} else {
 			FTPUtils.uploadFTP(config.FTPUsername, config.FTBPassword, config.FTBServer, new File(permJsonName),
 					"/static/permissions/permissions.json");
